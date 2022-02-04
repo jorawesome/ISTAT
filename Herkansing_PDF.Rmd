@@ -34,7 +34,7 @@ group_by(gemiddelde_port, Geslacht) %>%
   )
 ```
 ## Boxplot
-Als eerst is er een boxplot gemaakt om te kijken of er een verschil is te zien in gemiddeldes. uit deze boxplot is er een klein verschil te zien in gemiddeldes. dit verschil is niet groot genoeg om te kunnen zeggen dat er een significant verschil is. er wordt dus verder onderzoek gedaan in de vorm van een t.test. 
+Als eerst is er een boxplot gemaakt om te kijken of er een verschil is te zien in gemiddeldes. Uit deze boxplot is er een klein verschil te zien in gemiddeldes. Dit verschil is niet groot genoeg om te kunnen zeggen dat er een significant verschil is. Er wordt dus verder onderzoek gedaan in de vorm van een t.test. 
 ```{r}
 ggboxplot(gemiddelde_port, x = "Geslacht", y = "Gemiddelde", 
           color = "Geslacht", palette = c("#00AFBB", "#E7B800"),
@@ -43,9 +43,9 @@ ggboxplot(gemiddelde_port, x = "Geslacht", y = "Gemiddelde",
 t.test(Gemiddelde ~ Geslacht, data = gemiddelde_port)
 ```
 ## t.test
-### Uit de t.test komt of er verschil zit tussen de gemiddelde cijfers van Portugees tussen man en vrouw. bij deze test is er een 95% betrouwbaarheid gerekend. we hebben een hypothese opgesteld, en die luidt:
-$H_0$: het verschil tussen de gemiddelde cijfers van portugees tussen man en vrouw is gelijk.
-$H_1$: het verschil tussen de gemiddelde cijfers van portugees tussen man en vrouw is ongelijk.
+### Uit de t.test komt of er verschil zit tussen de gemiddelde cijfers van Portugees tussen man en vrouw. Bij deze test is er een 95% betrouwbaarheid gerekend. We hebben een hypothese opgesteld, en die luidt:
+$H_0$: Het verschil tussen de gemiddelde cijfers van portugees tussen man en vrouw is gelijk.
+$H_1$: Het verschil tussen de gemiddelde cijfers van portugees tussen man en vrouw is ongelijk.
 Bij het uitvoeren van deze test kwamen deze uitkomsten uit:
 
 ```{r include = FALSE}
