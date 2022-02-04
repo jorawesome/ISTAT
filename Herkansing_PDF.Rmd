@@ -1,13 +1,17 @@
 ---
-title: "Herkansing"
-author: "Thomas & Jordi"
-date: "2/3/2022"
+title: "ISTAT Pracitcum"
+author: "Thomas Wouters (20188102) & Jordi van Selm (18138926)"
+date: "februari 2022"
 output: pdf_document
 ---
 
+# Opdracht 1
+
+
+
 # Opdracht 2
 ## Verschil in gemiddeld cijfer Portugees tussen mannen en vrouwen.
-Om te kijken naar de verschillen tussen het gemiddelde cijfer van mannen en vrouwen, wordt er gekeken naar cijfers van G1 tot G3 van de toetsen portugees. hiervan wordt het gemiddelde genomen, omdat dit zorgt dat uitschieters in de toetsen minder invloed hebben op de uitkomst van de test.
+Om te kijken naar de verschillen tussen het gemiddelde cijfer van mannen en vrouwen, wordt er gekeken naar cijfers van G1 tot G3 van de toetsen Portugees. Hiervan wordt het gemiddelde genomen, omdat dit zorgt dat uitschieters in de toetsen minder invloed hebben op de uitkomst van de test.
 
 ```{r include = FALSE}
 mydata <- read.csv("/Users/jordivanselm/Downloads/CSV/dataset_herkansing.csv",sep = ";")
@@ -20,8 +24,7 @@ gender_en_cijfer_port = mydata %>% select(2, 35:37)
 
 gemiddelde_port = data.frame(Geslacht=gender_en_cijfer_port[,1], Gemiddelde=rowMeans(gender_en_cijfer_port[,-1]))
 ```
-## Boxplot
-## als eerst is er een boxplot gemaakt om te kijken of er een verschil is te zien in gemiddeldes. uit deze boxplot is er een klein verschil te zien in gemiddeldes. dit verschil is niet groot genoeg om te kunnen zeggen dat er een significant verschil is. er wordt dus verder onderzoek gedaan in de vorm van een t.test. 
+
 ```{r}
 group_by(gemiddelde_port, Geslacht) %>%
   summarise(
@@ -29,7 +32,10 @@ group_by(gemiddelde_port, Geslacht) %>%
     mean = mean(Gemiddelde, na.rm = TRUE),
     sd = sd(Gemiddelde, na.rm = TRUE)
   )
-
+```
+## Boxplot
+Als eerst is er een boxplot gemaakt om te kijken of er een verschil is te zien in gemiddeldes. uit deze boxplot is er een klein verschil te zien in gemiddeldes. dit verschil is niet groot genoeg om te kunnen zeggen dat er een significant verschil is. er wordt dus verder onderzoek gedaan in de vorm van een t.test. 
+```{r}
 ggboxplot(gemiddelde_port, x = "Geslacht", y = "Gemiddelde", 
           color = "Geslacht", palette = c("#00AFBB", "#E7B800"),
           ylab = "Gemiddelde", xlab = "Geslacht")
@@ -37,23 +43,23 @@ ggboxplot(gemiddelde_port, x = "Geslacht", y = "Gemiddelde",
 t.test(Gemiddelde ~ Geslacht, data = gemiddelde_port)
 ```
 ## t.test
-## uit de t.test komt of er verschil zit tussen de gemiddelde cijfers van Portugees tussen man en vrouw. bij deze test is er een 95% betrouwbaarheid gerekend. we hebben een hypothese opgesteld, en die luidt:
-#H0: het verschil tussen de gemiddelde cijfers van portugees tussen man en vrouw is gelijk.
-#H1: het verschil tussen de gemiddelde cijfers van portugees tussen man en vrouw is ongelijk.
-#bij het uitvoeren van deze test kwamen deze uitkomsten uit:
+### Uit de t.test komt of er verschil zit tussen de gemiddelde cijfers van Portugees tussen man en vrouw. bij deze test is er een 95% betrouwbaarheid gerekend. we hebben een hypothese opgesteld, en die luidt:
+$H_0$: het verschil tussen de gemiddelde cijfers van portugees tussen man en vrouw is gelijk.
+$H_1$: het verschil tussen de gemiddelde cijfers van portugees tussen man en vrouw is ongelijk.
+Bij het uitvoeren van deze test kwamen deze uitkomsten uit:
 
 ```{r include = FALSE}
 wis_tot = mydata %>% select(29:31)
 wis_tot_transp <- wis_tot%>% pivot_longer(c(G1.wis,G2.wis,G3.wis),names_to = "toetsnummer", values_to = "cijfer")
 ```
-#de p-waarde is kleiner dan 0,05 dus er is een significant verschil waardoor geconcludeerd mag worden dat het gemiddelde cijfer Portugees van vrouwen hoger is dan dat van mannen.
+De p-waarde is kleiner dan 0,05 dus er is een significant verschil waardoor geconcludeerd mag worden dat het gemiddelde cijfer Portugees van vrouwen hoger is dan dat van mannen.
 
-##Leren van toets
-#docenten denken dat studenten leren van de toets. dit wordt dus getest via een ANOVA. we gaan kijken naar de verschillen tussen de cijfers van G1.wis, G2.wis en G3.wis. Hierbij is de volgende Hypothese opgesteld:
-#H0: er zit geen verschil tussen de gemiddeldes tussen G1.wis, G2.wis en G3.wis.
-#H1: er zit minimaal één verschil tussen de gemiddeldes tussen G1.wis, G2.wis en G3.wis.
+## Leren van toets
+### Docenten denken dat studenten leren van de toets. dit wordt dus getest via een ANOVA. we gaan kijken naar de verschillen tussen de cijfers van G1.wis, G2.wis en G3.wis. Hierbij is de volgende Hypothese opgesteld:
+$H_0$: er zit geen verschil tussen de gemiddeldes tussen G1.wis, G2.wis en G3.wis.
+$H_1$: er zit minimaal één verschil tussen de gemiddeldes tussen G1.wis, G2.wis en G3.wis.
 
-#voor ANOVA wordt er is gekeken naar de normaliteit, omdat dit een voorwaarde is om anova te krijgen. Hieruit volgde het volgende:
+Voor ANOVA wordt er is gekeken naar de normaliteit, omdat dit een voorwaarde is om anova te krijgen. Hieruit volgde het volgende:
 ```{r include = FALSE}
 wis_tot = mydata %>% select(29:31)
 wis_tot$Avg_score = apply(wis_tot[,-1], 1, mean)
@@ -66,7 +72,7 @@ res.aov <-aov(cijfer~toetsnummer, data = wis_tot2)
 ```{r}
 summary(res.aov)
 ```
-#uit deze tabel is te zien dat de P-waarde groter is dan de 0.05. dat betekend dat de H0 hypothese verworpen wordt. Er is dus geen significant verschil tussen het toetsnummer en het cijfer wat behaald wordt.
+Uit deze tabel is te zien dat de P-waarde groter is dan de 0.05. dat betekend dat de $H_0$ hypothese verworpen wordt. Er is dus geen significant verschil tussen het toetsnummer en het cijfer wat behaald wordt.
 ```{r include = FALSE}
 cor_data <- mydata%>% select(29:31,35:37) %>% mutate(observation = 1:n()) %>%
 pivot_longer(c(G1.wis,G2.wis,G3.wis), names_to = 'test',values_to = "wiskunde") %>%
@@ -75,16 +81,17 @@ pivot_longer(c(G1.por,G2.por,G3.por), names_to = 'test2',values_to = "portugees"
 res <- cor.test(cor_data$wiskunde, cor_data$portugees,
 method = "pearson")
 ```
-##correlatie tussen wiskunde en portugees.
+## Correlatie tussen wiskunde en portugees.
 
-Er word gekeken of een goed cijfer voor wiskunde ook betekend dat er een goed cijfer voor portugees word gehaald. Hierbij wordt de volgende hypothese opgeteld:
+Er wordt gekeken of een goed cijfer voor wiskunde ook betekend dat er een goed cijfer voor portugees word gehaald. Hierbij wordt de volgende hypothese opgeteld:
 $H_0$: er is geen verband tussen het cijfer wiskunde en het cijfer portugees.
 $H_1$: er is een verband tussen het cijfer wiskunde en het cijfer portugees.
 
-##Bij deze hypothese is een 95% betrouwbaarheid genomen. hieronder bevind zich het correlatietabel:
+Bij deze hypothese is een 95% betrouwbaarheid genomen. hieronder bevind zich het correlatietabel:
 ```{r}
 res
 ```
-### uit deze correlatietabel is te zien dat de p-waarde kleiner is dan 0.05. Dit betekend dat de H0 verworpen word, dus is er een verband tussen het cijfer wiskunde en het cijfer portugees. Ook is er te zien dat de correlatie positief is, namelijk: 0.522. dit betekend dat er een positief verband is.  dit betekend dat goede cijfers halen voor wiskunde ook betekend dat je goede cijfers haalt voor portugees (en andersom). 
+Uit deze correlatietabel is te zien dat de p-waarde kleiner is dan 0.05. Dit betekend dat de $H_0$ verworpen wordt, dus is er een verband tussen het cijfer wiskunde en het cijfer Portugees. Ook is er te zien dat de correlatie positief is, namelijk: 0.522. dit betekend dat er een positief verband is. Dit betekend dat goede cijfers halen voor wiskunde ook betekend dat je goede cijfers haalt voor Portugees (en andersom). 
 
+# Opdracht 3
 
