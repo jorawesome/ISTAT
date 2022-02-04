@@ -7,10 +7,9 @@ output: pdf_document
 
 # Opdracht 1
 
-
-
 # Opdracht 2
-## Verschil in gemiddeld cijfer Portugees tussen mannen en vrouwen.
+## 2A: Scoren vrouwen beter dan mannen?
+### Verschil in gemiddeld cijfer Portugees tussen mannen en vrouwen.
 Om te kijken naar de verschillen tussen het gemiddelde cijfer van mannen en vrouwen, wordt er gekeken naar cijfers van G1 tot G3 van de toetsen Portugees. Hiervan wordt het gemiddelde genomen, omdat dit zorgt dat uitschieters in de toetsen minder invloed hebben op de uitkomst van de test.
 
 ```{r include = FALSE}
@@ -18,14 +17,12 @@ mydata <- read.csv("/Users/jordivanselm/Downloads/CSV/dataset_herkansing.csv",se
 library(dplyr)
 library("ggpubr")
 library(tidyverse)
-#library("statrix")
-
 gender_en_cijfer_port = mydata %>% select(2, 35:37) 
 
 gemiddelde_port = data.frame(Geslacht=gender_en_cijfer_port[,1], Gemiddelde=rowMeans(gender_en_cijfer_port[,-1]))
 ```
 
-```{r}
+```{r echo = FALSE}
 group_by(gemiddelde_port, Geslacht) %>%
   summarise(
     count = n(),
@@ -33,15 +30,21 @@ group_by(gemiddelde_port, Geslacht) %>%
     sd = sd(Gemiddelde, na.rm = TRUE)
   )
 ```
-## Boxplot
-Als eerst is er een boxplot gemaakt om te kijken of er een verschil is te zien in gemiddeldes. Uit deze boxplot is er een klein verschil te zien in gemiddeldes. Dit verschil is niet groot genoeg om te kunnen zeggen dat er een significant verschil is. Er wordt dus verder onderzoek gedaan in de vorm van een t.test. 
-```{r}
-ggboxplot(gemiddelde_port, x = "Geslacht", y = "Gemiddelde", 
+
+```{r include = FALSE}
+boxplotgg <- ggboxplot(gemiddelde_port, x = "Geslacht", y = "Gemiddelde", 
           color = "Geslacht", palette = c("#00AFBB", "#E7B800"),
           ylab = "Gemiddelde", xlab = "Geslacht")
 
 t.test(Gemiddelde ~ Geslacht, data = gemiddelde_port)
 ```
+
+```{r, fig.height=3,  fig.width=3, echo = FALSE}
+boxplotgg
+```
+
+Als eerst is er een boxplot gemaakt om te kijken of er een verschil is te zien in gemiddeldes. Uit deze boxplot is er een klein verschil te zien in gemiddeldes. Dit verschil is niet groot genoeg om te kunnen zeggen dat er een significant verschil is. Er wordt dus verder onderzoek gedaan in de vorm van een t.test. 
+
 ## t.test
 ### Uit de t.test komt of er verschil zit tussen de gemiddelde cijfers van Portugees tussen man en vrouw. Bij deze test is er een 95% betrouwbaarheid gerekend. We hebben een hypothese opgesteld, en die luidt:
 $H_0$: Het verschil tussen de gemiddelde cijfers van portugees tussen man en vrouw is gelijk.
@@ -54,7 +57,7 @@ wis_tot_transp <- wis_tot%>% pivot_longer(c(G1.wis,G2.wis,G3.wis),names_to = "to
 ```
 De p-waarde is kleiner dan 0,05 dus er is een significant verschil waardoor geconcludeerd mag worden dat het gemiddelde cijfer Portugees van vrouwen hoger is dan dat van mannen.
 
-## Leren van toets
+## 2B: Leren van toets
 ### Docenten denken dat studenten leren van de toets. dit wordt dus getest via een ANOVA. we gaan kijken naar de verschillen tussen de cijfers van G1.wis, G2.wis en G3.wis. Hierbij is de volgende Hypothese opgesteld:
 $H_0$: er zit geen verschil tussen de gemiddeldes tussen G1.wis, G2.wis en G3.wis.
 $H_1$: er zit minimaal één verschil tussen de gemiddeldes tussen G1.wis, G2.wis en G3.wis.
@@ -69,7 +72,7 @@ wis_tot2 <- wis_tot %>% pivot_longer(c(G1.wis,G2.wis,G3.wis),names_to = "toetsnu
 res.aov <-aov(cijfer~toetsnummer, data = wis_tot2)
 ```
 
-```{r}
+```{r, echo = FALSE}
 summary(res.aov)
 ```
 Uit deze tabel is te zien dat de P-waarde groter is dan de 0.05. dat betekend dat de $H_0$ hypothese verworpen wordt. Er is dus geen significant verschil tussen het toetsnummer en het cijfer wat behaald wordt.
@@ -81,14 +84,14 @@ pivot_longer(c(G1.por,G2.por,G3.por), names_to = 'test2',values_to = "portugees"
 res <- cor.test(cor_data$wiskunde, cor_data$portugees,
 method = "pearson")
 ```
-## Correlatie tussen wiskunde en portugees.
+## 2C: Correlatie tussen wiskunde en portugees.
 
 Er wordt gekeken of een goed cijfer voor wiskunde ook betekend dat er een goed cijfer voor portugees word gehaald. Hierbij wordt de volgende hypothese opgeteld:
 $H_0$: er is geen verband tussen het cijfer wiskunde en het cijfer portugees.
 $H_1$: er is een verband tussen het cijfer wiskunde en het cijfer portugees.
 
 Bij deze hypothese is een 95% betrouwbaarheid genomen. hieronder bevind zich het correlatietabel:
-```{r}
+```{r, echo = FALSE}
 res
 ```
 Uit deze correlatietabel is te zien dat de p-waarde kleiner is dan 0.05. Dit betekend dat de $H_0$ verworpen wordt, dus is er een verband tussen het cijfer wiskunde en het cijfer Portugees. Ook is er te zien dat de correlatie positief is, namelijk: 0.522. dit betekend dat er een positief verband is. Dit betekend dat goede cijfers halen voor wiskunde ook betekend dat je goede cijfers haalt voor Portugees (en andersom). 
